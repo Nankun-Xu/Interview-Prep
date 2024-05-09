@@ -130,18 +130,22 @@ public class CardGame{
 
     //Deal and Score counting
     public static List<int[]> playGame(List<String> players, int[] deck){
+        // [dayu] variable nameing can be more clear
         int n = players.size(), m = deck.length;
         int cardPerPlayer = m / n;
         int[] maxCards = new int[n];
         int[] playerScores = new int[n];
 
         //Deal cards and update max card num
+        // [dayu] does each internal list represent the cards held by that player?
         List<List<Integer>> playersCards = new ArrayList<>();
 
+        // [dayu] I feel there should be some comment on this loop
         for(int i = 0; i < m; i += n){
             for(int j = 0; j < n; j++){
-                playersCards.get(j).add(deck[i]);
-                maxCards[j] = Math.max(deck[i], maxCards[j]);
+                // [dayu] there will be null pointer exception because internal lists are not initiated right
+                playersCards.get(j).add(deck[i]); // [dayu] should this be .add(deck[i+j])
+                maxCards[j] = Math.max(deck[i], maxCards[j]); // [dayu] Math.max(deck[i+j], maxCards[j])
             }
         }
         //Radom deal the leftover cards
@@ -149,9 +153,9 @@ public class CardGame{
             Random rd = new Random();
             int remain = m % n;
             for(int i = 0; i < remain; i++){
-                int next = rd.nextInt(n + 1);
+                int next = rd.nextInt(n + 1); // [dayu] should this be nextInt(n) here?
                 playersCards.get(next).add(deck[deck.length - i]);
-                maxCards[j] = Math.max(deck[i], maxCards[j]);
+                maxCards[j] = Math.max(deck[i], maxCards[j]); // [dayu] deck[deck.length - i] can be saved as a local variable for reuse
             }
         }
 
@@ -161,7 +165,7 @@ public class CardGame{
             int winner = 0;
             for (int j = 0; j < n; j++){
                 if(playersCards.get(j).get(i) > currentCard){
-                    winner = j;
+                    winner = j; // [dayu] need to update currentCard here as well. Also currentCard can be better named I feel
                 }
             }
             playerScores[winner] += n;
