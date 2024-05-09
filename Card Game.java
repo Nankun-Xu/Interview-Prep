@@ -128,6 +128,7 @@ public class CardGame{
         }
     }
 
+
     //Deal and Score counting
     public static List<int[]> playGame(List<String> players, int[] deck){
         // [dayu] variable nameing can be more clear
@@ -136,16 +137,16 @@ public class CardGame{
         int[] maxCards = new int[n];
         int[] playerScores = new int[n];
 
-        //Deal cards and update max card num
-        // [dayu] does each internal list represent the cards held by that player?
-        List<List<Integer>> playersCards = new ArrayList<>();
+        List<List<Integer>> eachPlayrsDecks = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            eachPlayrsDecks.add(new ArrayList<>());
+        }
 
-        // [dayu] I feel there should be some comment on this loop
-        for(int i = 0; i < m; i += n){
-            for(int j = 0; j < n; j++){
-                // [dayu] there will be null pointer exception because internal lists are not initiated right
-                playersCards.get(j).add(deck[i]); // [dayu] should this be .add(deck[i+j])
-                maxCards[j] = Math.max(deck[i], maxCards[j]); // [dayu] Math.max(deck[i+j], maxCards[j])
+        // deal the cards one by one
+        for(int j = 0; j < n; j++){
+            for(int i = 0; i + j < m; i += n){
+                eachPlayrsDecks.get(j).add(deck[i + j]);
+                maxCards[j] = Math.max(deck[i + j], maxCards[j]);
             }
         }
         //Radom deal the leftover cards
@@ -153,19 +154,22 @@ public class CardGame{
             Random rd = new Random();
             int remain = m % n;
             for(int i = 0; i < remain; i++){
-                int next = rd.nextInt(n + 1); // [dayu] should this be nextInt(n) here?
-                playersCards.get(next).add(deck[deck.length - i]);
-                maxCards[j] = Math.max(deck[i], maxCards[j]); // [dayu] deck[deck.length - i] can be saved as a local variable for reuse
+                //Randomly choose a player to give leftover
+                int next = rd.nextInt(n);
+                int currentCard = deck[deck.length - 1 - i];
+                eachPlayrsDecks.get(next).add(currentCard);
+                maxCards[i] = Math.max(currentCard, maxCards[i]);
             }
         }
 
         //Compare cards, calculate score
         for(int i = 0; i < cardPerPlayer; i++){
-            int currentCard = playersCards.get(0).get(i);
+            int biggestCard = eachPlayrsDecks.get(0).get(i);
             int winner = 0;
             for (int j = 0; j < n; j++){
-                if(playersCards.get(j).get(i) > currentCard){
-                    winner = j; // [dayu] need to update currentCard here as well. Also currentCard can be better named I feel
+                if(eachPlayrsDecks.get(j).get(i) > biggestCard){
+                    winner = j;
+                    biggestCard = eachPlayrsDecks.get(j).get(i);
                 }
             }
             playerScores[winner] += n;
@@ -174,35 +178,48 @@ public class CardGame{
         List<int[]> res = new ArrayList<>();
         res.add(maxCards);
         res.add(playerScores);
+
+        return res;
+    }
+
+    public static boolean hasbiggerCardNum(List<Integer> deck1, List<Integer> deck2){
+        
     }
 
     public static void main(String[] args) {
-        int numPlayers = 3;
-        List<String> players = {"Player 1", "Player 2", "Player 3"};
+        List<String> players = Arrays.asList("Player 1", "Player 2", "Player 3");
 
         int[] deck = generateDeck(56);
         suffleCard(deck);
-        List<int[]> playerResults = playGame(deck, players);
+        List<int[]> playerResults = playGame(players, deck);
+        int[] scores = playerResults.get(1);
+        int[] cardNums = playerResults.get(0);
 
         int maxScore = 0;
+        int maxCardNum = 0;
         int winnerIndex = -1;
-        for (int i = 0; i < playerResults.size(); i++) {
-            int[] result = playerResults.get(i);
-            int score = result[0];
-            System.out.println(players[i] + " - Score: " + score + ", Max Card: " + result[1]);
+        for (int i = 0; i < players.size(); i++) {
+            int score = scores[i];
+            int cardNum = cardNums[i];
+            System.out.println(players.get(i) +  " - Score: " + score + ", Max Card: " + cardNum);
             if (score > maxScore) {
                 maxScore = score;
                 winnerIndex = i;
             }
+            if(score == maxScore){
+                if(cardNum > maxCardNum){
+                    winnerIndex = i;
+                }
+            }
         }
 
-        System.out.println();
+        System.out.println("---------------------------");
 
-        System.out.println("Winner: " + players[winnerIndex] + " - Score: " + maxScore);
+        System.out.println("Winner: " + players.get(winnerIndex) + " - Score: " + maxScore);
 
-        for (int i = 0; i < playerResults.size(); i++) {
+        for (int i = 0; i < players.size(); i++) {
             if (i != winnerIndex) {
-                System.out.println("Loser: " + players[i] + " - Score: " + playerResults.get(i)[0]);
+                System.out.println("Loser: " + players.get(i) + " - Score: " + scores[i]);
             }
         }
     }
