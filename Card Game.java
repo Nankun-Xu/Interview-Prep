@@ -135,7 +135,7 @@ public class CardGame{
         int[] maxCards = new int[n];
         int[] playerScores = new int[n];
 
-        //Deal cards
+        //Deal cards and update max card num
         List<List<Integer>> playersCards = new ArrayList<>();
 
         for(int i = 0; i < m; i += n){
@@ -155,21 +155,32 @@ public class CardGame{
             }
         }
 
-        //Compare cards, calculate score and update max card number
-        for(int i = 0; i < m; i++){
-            
+        //Compare cards, calculate score
+        for(int i = 0; i < cardPerPlayer; i++){
+            int currentCard = playersCards.get(0).get(i);
+            int winner = 0;
+            for (int j = 0; j < n; j++){
+                if(playersCards.get(j).get(i) > currentCard){
+                    winner = j;
+                }
+            }
+            playerScores[winner] += n;
         }
+
+        List<int[]> res = new ArrayList<>();
+        res.add(maxCards);
+        res.add(playerScores);
     }
 
     public static void main(String[] args) {
         int numPlayers = 3;
-        String[] players = {"Player 1", "Player 2", "Player 3"};
+        List<String> players = {"Player 1", "Player 2", "Player 3"};
 
         int[] deck = generateDeck(56);
         suffleCard(deck);
         List<int[]> playerResults = playGame(deck, players);
 
-        int maxScore = Integer.MIN_VALUE;
+        int maxScore = 0;
         int winnerIndex = -1;
         for (int i = 0; i < playerResults.size(); i++) {
             int[] result = playerResults.get(i);
