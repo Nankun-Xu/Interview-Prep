@@ -50,3 +50,45 @@ public class ShortestSubstring {
 Follow up:hash 优化
 unique 最小 Sub Sequence 
 */
+
+class Solution {
+    public String[] shortestSubstrings(String[] arr) {
+        HashMap<String, Integer> substringFrequency = new HashMap<>();
+        String[] result = new String[arr.length];
+
+        // Count frequencies of all substrings
+        for (String str : arr) {
+            HashSet<String> seenSubstrings = new HashSet<>();
+            for (int i = 0; i < str.length(); ++i) {
+                for (int j = 1; j <= str.length() - i; ++j) {
+                    String sub = str.substring(i, i + j);
+                    seenSubstrings.add(sub);
+                }
+            }
+            for (String sub : seenSubstrings) {
+                substringFrequency.put(sub, substringFrequency.getOrDefault(sub, 0) + 1);
+            }
+        }
+
+        // Find the shortest unique substrings
+        for (int idx = 0; idx < arr.length; ++idx) {
+            String str = arr[idx];
+            String shortestUnique = ""; // Track the shortest unique substring
+
+            for (int i = 0; i < str.length(); ++i) {
+                for (int j = 1; j <= str.length() - i; ++j) {
+                    String sub = str.substring(i, i + j);
+                    if (substringFrequency.get(sub) == 1) {
+                        if (shortestUnique.isEmpty() || sub.length() < shortestUnique.length() || (sub.length() == shortestUnique.length() && sub.compareTo(shortestUnique) < 0)) {
+                            shortestUnique = sub; // Update if it's shorter or lexicographically smaller
+                        }
+                    }
+                }
+            }
+
+            result[idx] = shortestUnique; // Assign the shortest unique substring found
+        }
+
+        return result;
+    }
+}
