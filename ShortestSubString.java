@@ -16,14 +16,14 @@ public class ShortestSubstring {
             String[] ans = new String[n];
 
             //check each string element in arr
-            for(int i = 0; i < n; i++){
+            for(int i = 0; i < n; i++){//O(N)
                 int strLen = arr[i].length();
                 String res = "";
                 //check from shortest substring, which size is 1
-                for(int size = 1; size <= strLen && res.isEmpty();size++){
-                    for(int j = size; j <= strLen; j++){
+                for(int size = 1; size <= strLen && res.isEmpty();size++){//O(N*M)
+                    for(int j = size; j <= strLen; j++){//O(N*M^2)
                         String subStr = arr[i].substring(j - size, j);
-                        if(res.isEmpty() && isUnique(arr, i, subStr)) {
+                        if(res.isEmpty() && isUnique(arr, i, subStr)) {//O(N^2*M^3)
                             res = subStr;
                         }
                     }
@@ -36,8 +36,8 @@ public class ShortestSubstring {
 
         //Helper function to check whether sub string is unique or not
         private static boolean isUnique(String[] arr, int i, String sub) {
-            for (int j = 0; j < arr.length; j++) {
-                if (j != i && arr[j].contains(sub)) {
+            for (int j = 0; j < arr.length; j++) { //O(N)
+                if (j != i && arr[j].contains(sub)) {//O(N*M)
                     return false;
                 }
             }
