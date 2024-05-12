@@ -3,17 +3,20 @@ import java.util.*;
 public class GetRandom {
     Random random;
     List<Integer> keyList;//use a list of keys to make get keyvalue O(1)
-    Map<Integer,Integer> map;//
+    Map<Integer,Integer> map;
+    Map<Integer, Integer> idxMap;//<key, idx>
 
     public GetRandom(){
         random = new Random();
         keyList = new ArrayList<>();//use a list of keys to make get keyvalue O(1)
         map = new HashMap<Integer,Integer>();//
+        idxMap = new HashMap<>();
     }
 
     public void put(int key, int val){
         map.put(key,val);
         keyList.add(key);
+        idxMap.put(key, keyList.size() - 1);
     }
 
     public int get(int key){
@@ -21,19 +24,21 @@ public class GetRandom {
     }
 
     public void remove(int key){
+        //remove the key from keylist -> switch the last element with key and remove the last ele
+        int keyIdx = idxMap.get(key);
+        int lastKey = keyList.get(keyList.size() - 1);
+        keyList.set(keyIdx,lastKey);
+        keyList.remove(keyList.size() - 1);
+        //remove the key from idxmap -> O(1), update lastkey,idx
+        idxMap.remove(key);
+        idxMap.put(lastKey, keyIdx);
+        //remove the key from map -> O1
         map.remove(key);
-        for(int i = 0; i < keyList.size(); i++){
-            if(keyList.get(i) == key){
-                keyList.remove(i);
-            }
-        }
-        /*  int idx = map.get(val);//(val,idx(key))
-            int last = list.get(list.size() - 1);//get last element of list
-            list.set(idx, last);//put last element to the position of the element you want to remove
-            map.put(last, idx);//update map(orginal (last, list.size() - 1))
-            map.remove(val);//remove by val in map
-            list.remove(list.size() - 1);//remove in list*/
-
+//        for(int i = 0; i < keyList.size(); i++){
+//            if(keyList.get(i) == key){
+//                keyList.remove(i);
+//            }
+//        }
     }
 
     public int getRandomValue(){
