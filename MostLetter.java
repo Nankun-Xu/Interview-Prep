@@ -17,6 +17,11 @@ But a and e each appear in only 1 word with c.
   }
 */
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 public class MostLetter{
     public static void main(String[] args) {
         String[] strs  = {"abc", "bcd", "cde"};
@@ -24,25 +29,34 @@ public class MostLetter{
     }
     
     private static Map<Character, Set<Character>> getLettersAppears(String[] strs) {
-        Map<Character, Set<Integer>> map = new HashMap<>();
+        //Store idx position each char appeared in arr
+        Map<Character, Set<Integer>> charMap = new HashMap<>();
         for(int i=0;i<strs.length;i++) {
             String s = strs[i];
             for(char c : s.toCharArray()) {
-                map.putIfAbsent(c, new HashSet<>());
-                map.get(c).add(i);
+                charMap.putIfAbsent(c, new HashSet<>());
+                charMap.get(c).add(i);
             }
         }
-    
+        
         Map<Character, Set<Character>> res = new HashMap<>();
-        for(char key : map.keySet()) {
-            Set<Integer> nums = map.get(key);
+        //iterate all char appears,for each char:
+        //store counts of chars has appeared with it in a new count map
+        //maintain a maxcount and after finish the iterate
+        //use count map to find out char with max count and put them in res
+        for(char key : charMap.keySet()) {
+            Set<Integer> nums = charMap.get(key);
             Map<Character, Integer> cntMap = new HashMap<>();
             int max = 0;
+            //traverde each str this key char has appeared
             for(Integer pos : nums) {
                 for(char k : map.keySet()) {
+                    //eliminate key itself
                     if(key == k)
                         continue;
+                    //get where this char k has appeared
                     Set<Integer> tmp = map.get(k);
+                    //contains pos means these two chars has been in one word
                     if(tmp.contains(pos)) {
                         cntMap.put(k, cntMap.getOrDefault(k, 0) + 1);
                         max = Math.max(max, cntMap.get(k));

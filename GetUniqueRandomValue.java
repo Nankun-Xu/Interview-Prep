@@ -4,19 +4,19 @@ public class GetUniqueRandomValue {
     Random random;
     List<Integer> valueList;//use a list of keys to make get keyvalue O(1)
     Map<Integer,Integer> map;
-    Map<Integer,Integer> countMap;//count of values
+    Map<Integer,List<Integer>> countIdxMap;//count and idx fof values
 
     public GetRandom(){
         random = new Random();
         valueList = new ArrayList<>();
         map = new HashMap<Integer,Integer>();
-        countMap = new HashMap<Integer,Integer>();
+        countIdxMap = new HashMap<Integer,Integer>();
     }
 
     public void put(int key, int val){
         map.put(key,val);
-        if(countMap.get(key) == 0) valueList.add(val);
-        countMap.put(val, countMap.getOrDefault(val, 0) + 1);
+        if(countIdxMap.get(key) == 0) valueList.add(val);
+        countIdxMap.put(val, countIdxMap.getOrDefault(val, 0) + 1);
     }
 
     public int get(int key){
@@ -24,27 +24,6 @@ public class GetUniqueRandomValue {
     }
 
     public void remove(int key){
-        int val = map.get(key);
-        int count = countMap.get(val);
-        map.remove(key);
-        count--;
-        if(count == 0){
-            //delete val from countmap
-            countMap.remove(val);
-            //delete val from vallist
-            for(int i = 0; i < valueList.size; i++){
-                if(valueList(i) == val){
-                    vallist.remove(i);
-                }
-            }
-        }
-        else countMap.put(val, count);
-        /*  int idx = map.get(val);//(val,idx(key))
-            int last = list.get(list.size() - 1);//get last element of list
-            list.set(idx, last);//put last element to the position of the element you want to remove
-            map.put(last, idx);//update map(orginal (last, list.size() - 1))
-            map.remove(val);//remove by val in map
-            list.remove(list.size() - 1);//remove in list*/
 
     }
 

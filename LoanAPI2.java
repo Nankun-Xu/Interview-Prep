@@ -9,7 +9,7 @@ import java.util.LinkedList;
 
 public class LoanAPI {
     int totalLoan;// record sum of all loans
-    Deque<int[]> loanVolumes; // Using an array to store timestamp and total loan amount
+    Deque<int[]> loanVolumes; // Using an array to store timestamp and total loan amount {timastamp, totalLoan}
 
     public LoanAPI(){
         totalLoan = 0;
@@ -23,8 +23,7 @@ public class LoanAPI {
 
     // Return the loan volume at the current timestamp
     public int getLoanVolume(int timestamp){
-        
-        int reducedLoan = 0;
+        int reducedLoan = 0;//use a variety to recored total loan last poped out, which is loan need to be reduced
         while (!loanVolumes.isEmpty() && timestamp - loanVolumes.getFirst()[0] >= 3600) {
             reducedLoan = loanVolumes.getFirst()[1];
             loanVolumes.removeFirst();
@@ -48,12 +47,13 @@ public class LoanAPI {
 
 //use fix space
 //Time Complexity become constant
+//Circular Queue using an array
 public class LoanAPI2 {
     int totalLoan; 
     int[] timestamps; 
     int[] loanAmounts; 
-    int front; 
-    int rear;
+    int front; //head of array
+    int rear;//tail of array
 
     public LoanAPI2() {
         totalLoan = 0;
@@ -64,17 +64,23 @@ public class LoanAPI2 {
 
     public void processLoan(int timestamp, int amount) {
         totalLoan += amount;
+        //Checks if the circular array is full. 
+        //If so, it removes the oldest entry by decrementing totalLoan and updating front.
+        //maintain a fixed size array, prevent rear from out of boundary
         if ((rear + 1) % 3600 == front) {
             totalLoan -= loanAmounts[front];
             front = (front + 1) % 3600;
         }
+        //Stores the timestamp and totalLoan at the rear index of the arrays.
         timestamps[rear] = timestamp;
         loanAmounts[rear] = totalLoan;
+        //Updates rear.
         rear = (rear + 1) % 3600;
     }
 
     public int getLoanVolume(int timestamp) {
         int reducedLoan = 0;
+        //Iterates through the circular array from front to rear, removing entries older than 3600 seconds.
         while (front != rear && timestamp - timestamps[front] >= 3600) {
             reducedLoan = loanAmounts[front];
             front = (front + 1) % 3600;

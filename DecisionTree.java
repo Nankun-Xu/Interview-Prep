@@ -56,3 +56,44 @@ Afterwards, use your solution to grow the example tree above and write some test
 public class DecisionTree {
     
 }
+/*
+ * class DecisionTree {
+
+    private String signalName;
+    private Integer constant;
+    private String returnValue;
+
+    private DecisionTree left;
+    private DecisionTree right;
+
+    public DecisionTree[] static add_split(DecisionTree leaf, String signal_name, Integer constant) {
+        leaf.setSingalName = signal_name;
+        leaf.setConstant = constant;
+
+        DecisionTree left = new DecisionTree();
+        DecisionTree right = new DecisionTree();
+
+        leaf.setLeft(left);
+        leaf.setRight(right);
+
+        return DecisionTree[2]{left, right};
+    }
+
+    public static void setLeafValue(DecisionTree decisionTree, String returnValue) {
+        decisionTree.setReturnValue(returnValue);
+    }
+
+    public String evaluate(Queue<Integer> signals) {
+        Integer current = signals.pop();
+        if (current < constant) return Objects.isNull(left) ? returnValue : this.left.evaluate(signals);
+        return Objects.isNull(right) ? returnValue : this.right.evaluate(singals);
+    }
+}
+
+DecisionTree leaf1 = new DecisionTree();
+
+DecisionTree[] leaves = DecisionTree.add_split(leaf1, "currentAge", 5);
+DecisionTree.setLeafValue(leaf1, "N");
+DecisionTree.add_split(leaves[0], "someString", 2);
+DecisionTree.add_split(leaves[1], "someString", 8);
+ */
